@@ -6,6 +6,10 @@
 #   - package name
 riak_package:       riak
 
+riak_apt_repo_urls:
+  - "deb https://packagecloud.io/basho/{% if 'riak-ts' in riak_package %}riak-ts{% else %}riak{% endif %}/{{ ansible_distribution|lower }}/ {{ ansible_distribution_release }} main"
+  - "deb-src https://packagecloud.io/basho/{% if 'riak-ts' in riak_package %}riak-ts{% else %}riak{% endif %}/{{ ansible_distribution|lower }}/ {{ ansible_distribution_release }} main"
+
 riak_install_package_cloud: true
 
 riak_enterprise:    false
@@ -29,6 +33,11 @@ riak_ring_size:     64
 riak_backend:       bitcask
 riak_control:       'off'
 riak_search:        'off'
+
+riak_leveldb_tiered: 4
+riak_leveldb_tiered_path_fast: /var/lib/riak/leveldb/fast
+riak_leveldb_tiered_path_slow: /var/lib/riak/leveldb/slow
+riak_leveldb_data_root: ./
 
 riak_leveldb_max_mem_percent:   70
 riak_search_solr_jvm_options:   '-d64 -Xms1g -Xmx1g -XX:+UseStringCache -XX:+UseCompressedOops'

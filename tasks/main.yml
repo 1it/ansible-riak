@@ -2,51 +2,110 @@
 - name: Execute RedHat OS family specific install
   include: RedHat.yml
   when: ansible_os_family == 'RedHat'
+  tags: RedHat
+  static: no
 
 - name: Execute Debian OS family specific install
   include: Debian.yml
   when: ansible_os_family == 'Debian'
+  tags: Debian
+  static: no
 
-- name: mount the riak volume with optmized settings
-  mount: name={{ riak_mountpoint }} src={{ riak_partition }} opts="{{riak_mount_options}}" fstype="{{riak_filesystem}}" state=mounted
+- name: Mount the riak volume with optmized settings
+  mount:
+    name: "{{ riak_mountpoint }}"
+    src: "{{ riak_partition }}"
+    opts: "{{ riak_mount_options }}"
+    fstype: "{{ riak_filesystem }}"
+    state: mounted
   when: riak_tune_disks
 
-- name: create script with disk tuning commands
-  template: src=riak_disk_tune.sh.j2 dest=/usr/local/bin/riak_disk_tune.sh owner=root group=root mode=0755
+- name: Create script with disk tuning commands
+  template:
+    src: riak_disk_tune.sh.j2
+    dest: /usr/local/bin/riak_disk_tune.sh
+    owner: root
+    group: root
+    mode: 0755
   notify: run riak_disk_tune
   when: riak_tune_disks
 
-- name: add line to rc.local to call riak_disk_tune on boot
-  lineinfile: 'dest=/etc/rc.local line="if [ -x /usr/local/bin/riak_disk_tune.sh ]; then /usr/local/bin/riak_disk_tune.sh; fi" insertbefore="^exit 0"'
+- name: Add line to rc.local to call riak_disk_tune on boot
+  lineinfile:
+    dest: /etc/rc.local
+    line: "if [ -x /usr/local/bin/riak_disk_tune.sh ]; then /usr/local/bin/riak_disk_tune.sh; fi"
+    insertbefore: "^exit 0"
   when: riak_tune_disks
 
-- name: create sysctl.d
-  file: dest=/etc/sysctl.d state=directory
+- name: Ensure sysctl.d exists
+  file:
+    dest: /etc/sysctl.d
+    state: directory
 
-- name: configure sysctl
-  template: src=etc_sysctl.d_riak.conf.j2 dest=/etc/sysctl.d/riak.conf owner=root group=root mode=0644
+- name: Ensure leveldb directories exists
+  file:
+    dest: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ riak_leveldb_tiered_path_fast }}"
+    - "{{ riak_leveldb_tiered_path_slow }}"
 
-- name: copy custom beams
-  synchronize: "src={{ riak_custom_beams_dir }} dest={{ riak_patch_dir }}"
+- name: Configure related sysctl params
+  template:
+    src: etc_sysctl.d_riak.conf.j2
+    dest: /etc/sysctl.d/riak.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy custom beams
+  synchronize:
+    src="{{ riak_custom_beams_dir }}"
+    dest="{{ riak_patch_dir }}"
   when: riak_custom_beams_dir is defined
 
-- name: install riak.conf with templated configuration
-  template: "src={{ riak_conf_template }} dest=/etc/riak/riak.conf owner=root group=root mode=0444 backup=yes"
+- name: Install riak.conf with templated configuration
+  template: 
+    src: "{{ riak_conf_template }}"
+    dest: /etc/riak/riak.conf
+    owner: root 
+    group: root
+    mode: 0444
+    backup: yes
 
-- name: install advanced.config if template is defined
-  template: "src={{ riak_advanced_config_template }} dest=/etc/riak/advanced.config owner=root group=root mode=0444 backup=yes"
+- name: Install advanced.config if template is defined
+  template:
+    src: "{{ riak_advanced_config_template }}"
+    dest: /etc/riak/advanced.config
+    owner: root
+    group: root
+    mode: 0444
+    backup: yes
   when: riak_advanced_config_template is defined
 
-- name: install riak_shell.config with templated configuration
-  template: "src={{ riak_shell_conf_template }} dest=/etc/riak/riak_shell.config owner=root group=root mode=0444"
+- name: Install riak_shell.config with templated configuration
+  template: 
+    src: "{{ riak_shell_conf_template }}"
+    dest: /etc/riak/riak_shell.config
+    owner: root
+    group: root
+    mode: 0444
   when: riak_package == "riak-ts" and riak_shell_nodes is defined
 
-- name: Reboot Riak to accept the new config and ensure it is enabled to start at bootup
-  service: name=riak enabled=yes state=restarted
+- name: Restart Riak service to accept the new config and ensure it is enabled to start at bootup
+  service:
+    name: riak
+    enabled: yes
+    state: restarted
   when: riak_init_system == 'system'
 
 - name: Wait for Riak to start up before continuing
-  wait_for: "delay=5 timeout=30 host={{ riak_pb_bind_ip }} port={{ riak_pb_port }} state=started"
+  wait_for: 
+    delay: 5
+    timeout: 30
+    host: "{{ riak_pb_bind_ip }}"
+    port: "{{ riak_pb_port }}"
+    state: started
 
 - name: Bucket operations
   include: buckets.yml
