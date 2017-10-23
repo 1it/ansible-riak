@@ -1,15 +1,6 @@
 ---
-- name: Execute RedHat OS family specific install
-  include: RedHat.yml
-  when: ansible_os_family == 'RedHat'
-  tags: RedHat
-  static: no
-
-- name: Execute Debian OS family specific install
-  include: Debian.yml
-  when: ansible_os_family == 'Debian'
-  tags: Debian
-  static: no
+- name: Execute OS family specific install
+  include_tasks: "{{ ansible_os_family }}.yml"
 
 - name: Mount the riak volume with optmized settings
   mount:
@@ -42,14 +33,6 @@
     dest: /etc/sysctl.d
     state: directory
 
-- name: Ensure leveldb directories exists
-  file:
-    dest: "{{ item }}"
-    state: directory
-  with_items:
-    - "{{ riak_leveldb_tiered_path_fast }}"
-    - "{{ riak_leveldb_tiered_path_slow }}"
-
 - name: Configure related sysctl params
   template:
     src: etc_sysctl.d_riak.conf.j2
@@ -63,6 +46,16 @@
     src="{{ riak_custom_beams_dir }}"
     dest="{{ riak_patch_dir }}"
   when: riak_custom_beams_dir is defined
+
+- name: Archive (cleanup) generated configs and ring files
+  archive:
+    path: "/var/lib/riak/{{ item }}/*"
+    dest: "/tmp/riak_{{ item }}.gz"
+    remove: yes
+  with_items:
+    - ring
+    - generated.configs
+  ignore_errors: yes
 
 - name: Install riak.conf with templated configuration
   template: 
@@ -108,7 +101,7 @@
     state: started
 
 - name: Bucket operations
-  include: buckets.yml
+  include_tasks: buckets.yml
 
 - name: Security operations
-  include: security.yml
+  include_tasks: security.yml
