@@ -11,15 +11,9 @@
 
 - name: Install JRE
   package:
-    name: "{{ riak_java_package }}"
+    name: "{{ riak_java_package | default('default-jre') }}"
     state: present
-  when: riak_install_java and riak_java_package is defined
-
-- name: Install JRE
-  package:
-    name: default-jre
-    state: present
-  when: riak_install_java and riak_java_package is undefined
+  when: riak_install_java is defined
 
 - name: Check if Riak is installed
   stat:
@@ -38,7 +32,7 @@
 - name: Add Basho Riak repository (hosted at Package Cloud)
   apt_repository:
     repo: "{{ item }}"
-    state="present"
+    state: present
   with_items:
     - "{{ riak_apt_repo_urls }}"
   when:
@@ -76,6 +70,5 @@
   systemd:
     name: riak
     enabled: yes
-    state: restarted
     daemon_reload: yes
   when: '(ansible_distribution_release == "xenial" or ansible_distribution_release == "jessie") and (riak_init_system == "system")'

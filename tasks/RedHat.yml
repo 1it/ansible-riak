@@ -6,16 +6,10 @@
     update_cache: yes
 
 - name: Install JRE
-  package: 
-    name: "{{ riak_java_package }}"
-    state: present
-  when: riak_install_java and riak_java_package is defined
-
-- name: Install JRE
   package:
-    name: java-1.7.0-openjdk
+    name: "{{ riak_java_package | default('java-1.7.0-openjdk') }}"
     state: present
-  when: 'riak_install_java and riak_java_package is undefined'
+  when: riak_install_java is defined
 
 - name: Check if Riak is installed
   stat:
@@ -47,6 +41,6 @@
     - riak_install_package_cloud
 
 - name: Install Riak for RedHat
-  package: 
+  package:
     name: "{{ riak_package }}"
     state: present
