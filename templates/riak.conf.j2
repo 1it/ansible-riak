@@ -542,7 +542,13 @@ leveldb.compression = on
 ##   - one of: snappy, lz4
 leveldb.compression.algorithm = lz4
 
-## LevelDB Tiered 
+## LevelDB Tuning
+leveldb.write_buffer_size_min = {{ riak_leveldb_write_buffer_size_min }}
+leveldb.write_buffer_size_max = {{ riak_leveldb_write_buffer_size_max }}
+leveldb.block.size = {{ riak_leveldb_block_size }}
+leveldb.bloomfilter = {{ riak_leveldb_bloomfilter }}
+
+## LevelDB Tiered
 leveldb.tiered = {{ riak_leveldb_tiered }}
 leveldb.tiered.path.fast = {{ riak_leveldb_tiered_path_fast }}
 leveldb.tiered.path.slow = {{ riak_leveldb_tiered_path_slow }}
