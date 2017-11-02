@@ -29,7 +29,7 @@ riak_http_port:     8098
 riak_https_bind_ip: "{{ ansible_default_ipv4.address }}"
 riak_https_port:    10011
 
-riak_ring_size:     64
+riak_ring_size:     256
 riak_backend:       bitcask
 riak_control:       'off'
 riak_search:        'off'
@@ -38,6 +38,11 @@ riak_leveldb_tiered: 4
 riak_leveldb_tiered_path_fast: /var/lib/riak/leveldb/fast
 riak_leveldb_tiered_path_slow: /var/lib/riak/leveldb/slow
 riak_leveldb_data_root: ./
+
+riak_leveldb_write_buffer_size_min: 30MB
+riak_leveldb_write_buffer_size_max: 60MB
+riak_leveldb_block_size: 16KB
+riak_leveldb_bloomfilter: on
 
 riak_leveldb_max_mem_percent:   70
 riak_search_solr_jvm_options:   '-d64 -Xms1g -Xmx1g -XX:+UseStringCache -XX:+UseCompressedOops'
