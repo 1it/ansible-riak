@@ -20,9 +20,9 @@
 
 ### Ansible Galaxy Install
 
-`$ ansible-galaxy install basho-labs.riak-kv`
+`$ ansible-galaxy install 1it.riak`
 
-Then reference the role in your playbooks or other roles using the key `basho-labs.riak-kv`.
+Then reference the role in your playbooks or other roles using the key `1it.riak`.
 
 ### Manual Install
 
@@ -56,7 +56,7 @@ There are two different ways to override the default template:
 - hosts: riak
   sudo: true
   roles:
-    - { role: ansible-riak }
+    - { role: 1it.riak }
   vars:
     riak_pb_bind_ip: 10.29.7.192
     riak_pb_port:    10017
@@ -73,7 +73,7 @@ Internally, we have a [vagrant-ansible package](basho-labs/riak-clients-vagrant)
 - hosts: riakts
   sudo: true
   roles:
-    - { role: ansible-riak }
+    - { role: 1it.riak }
   vars:
     riak_package: 'riak-ts'
     riak_backend: leveldb
@@ -99,7 +99,7 @@ To [build a cluster](http://docs.basho.com/riak/latest/ops/building/basic-cluste
 - hosts: riak
   sudo: true
   roles:
-    - { role: ansible-riak }
+    - { role: 1it.riak }
   vars:
     ring_leader: riak1@127.0.0.1
   tasks:
@@ -129,7 +129,7 @@ The Riak module has the additional benefit of using the wait_for_ring & wait_for
 - hosts: riak
   sudo: true
   roles:
-    - { role: ansible-riak }
+    - { role: 1it.riak }
   vars:
     ring_leader: riak1@127.0.0.1
   tasks:

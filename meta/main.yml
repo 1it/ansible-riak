@@ -1,10 +1,9 @@
 ---
 galaxy_info:
-  author: Christopher Mancini <cmancini@basho.com>
+  author: Ivan Tuzhilkin <ivan.tuzhilkin@gmail.com>
   description: "Installs and configures Riak KV and TS, a distributed, highly available NoSQL and TimeSeries database."
-  company: Basho
   license: Apache
-  min_ansible_version: 2.1
+  min_ansible_version: 2.3
   platforms:
   - name: EL
     versions:
@@ -27,4 +26,5 @@ galaxy_info:
   - basho
   - timeseries
   - riak
+
 dependencies: []
