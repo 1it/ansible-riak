@@ -42,7 +42,7 @@ riak_leveldb_data_root: ./
 riak_leveldb_write_buffer_size_min: 30MB
 riak_leveldb_write_buffer_size_max: 60MB
 riak_leveldb_block_size: 16KB
-riak_leveldb_bloomfilter: on
+riak_leveldb_bloomfilter: "on"
 
 riak_leveldb_max_mem_percent:   70
 riak_search_solr_jvm_options:   '-d64 -Xms1g -Xmx1g -XX:+UseStringCache -XX:+UseCompressedOops'
