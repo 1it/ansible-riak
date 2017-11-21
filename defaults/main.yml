@@ -38,6 +38,7 @@ riak_leveldb_tiered: 4
 riak_leveldb_tiered_path_fast: /var/lib/riak/leveldb/fast
 riak_leveldb_tiered_path_slow: /var/lib/riak/leveldb/slow
 riak_leveldb_data_root: ./
+# riak_leveldb_slow_mountpoint: ''
 
 riak_leveldb_write_buffer_size_min: 30MB
 riak_leveldb_write_buffer_size_max: 60MB
