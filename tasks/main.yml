@@ -11,25 +11,25 @@
     state: mounted
   when: riak_tune_disks
 
-    - name: Ensure leveldb slow link exists
-      file:
-        src: /media/slow
-        dest: "{{ riak_leveldb_tiered_path_slow }}"
-        state: link
-        owner: riak
-        group: riak
-      ignore_errors: yes
+- name: Ensure leveldb slow link exists
+  file:
+    src: "{{ riak_leveldb_slow_mountpoint }}"
+    dest: "{{ riak_leveldb_tiered_path_slow }}"
+    state: link
+    owner: riak
+    group: riak
+  when: riak_leveldb_slow_mountpoint is defined and riak_leveldb_slow_mountpoint != ''
 
-    - name: Ensure leveldb directories exists
-      file:
-        dest: "{{ item }}"
-        state: directory
-        owner: riak
-        group: riak
-      with_items:
-        - "{{ riak_leveldb_tiered_path_fast }}"
-        - "{{ riak_leveldb_tiered_path_slow }}"
-      ignore_errors: yes
+- name: Ensure leveldb directories exists
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: riak
+    group: riak
+  with_items:
+    - "{{ riak_leveldb_tiered_path_fast }}"
+    - "{{ riak_leveldb_tiered_path_slow }}"
+  ignore_errors: yes
 
 - name: Create script with disk tuning commands
   template:
