@@ -118,7 +118,7 @@ nodename = {{ riak_node_name }}
 ##
 ## Acceptable values:
 ##   - text
-distributed_cookie = riak
+distributed_cookie = {{ riak_distributed_cookie }}
 
 ## Sets the number of threads in async thread pool, valid range
 ## is 0-1024. If thread support is available, the default is 64.

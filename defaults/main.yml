@@ -18,6 +18,8 @@ riak_admin:   '/usr/sbin/riak-admin'
 
 riak_conf_template: riak.conf.j2
 
+riak_distributed_cookie: "riak"
+
 riak_node_name:     "riak@{{ ansible_default_ipv4.address }}"
 
 riak_pb_bind_ip:    "{{ ansible_default_ipv4.address }}"
