@@ -56,10 +56,11 @@
 - name: Configure related sysctl params
   template:
     src: etc_sysctl.d_riak.conf.j2
-    dest: /etc/sysctl.d/riak.conf
+    dest: /etc/sysctl.d/30-riak.conf
     owner: root
     group: root
     mode: 0644
+  notify: restart procps
 
 - name: Copy custom beams
   synchronize:

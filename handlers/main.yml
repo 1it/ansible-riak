@@ -3,6 +3,11 @@
   command:
     /bin/bash /usr/local/bin/riak_disk_tune.sh
 
+- name: restart procps
+  service:
+    name: procps
+    state: restarted
+
 - name: Wait for http
   wait_for:
     port: "{{ riak_http_port }}"
